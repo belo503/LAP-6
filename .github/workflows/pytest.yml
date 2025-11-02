@@ -1,5 +1,4 @@
 name: Run Automated Tests
-
 on: [push, pull_request]
 
 jobs:
@@ -10,41 +9,24 @@ jobs:
     runs-on: ${{ matrix.os }}
     
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
         
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-          
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest
-          
-      - name: Debug - Show directory structure
-        run: |
-          echo "=== Current directory ==="
-          pwd
-          echo "=== Directory contents ==="
-          ls -la
-          echo "=== Scripts directory contents ==="
-          ls -la scripts/
-          echo "=== Test file content ==="
-          cat scripts/test_example.py
-          echo "=== Python version ==="
-          python --version
-          echo "=== Pytest version ==="
-          pytest --version
-          
-      - name: Run pytest (generate junit xml)
-        run: |
-          cd scripts
-          pytest -v . --junitxml=../pytest-report.xml
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest
         
-      - name: Upload test report artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: pytest-report_${{ matrix.os }}
-          path: pytest-report.xml
+    - name: Run pytest (generate junit xml)
+      run: pytest -v scripts/ --junitxml=pytest-report.xml
+      
+    - name: Upload test report artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: pytest-report_${{ matrix.os }}
+        path: pytest-report.xml
