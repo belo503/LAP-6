@@ -31,6 +31,8 @@ jobs:
           ls -la
           echo "=== Scripts directory contents ==="
           ls -la scripts/
+          echo "=== Test file content ==="
+          cat scripts/test_example.py
           echo "=== Python version ==="
           python --version
           echo "=== Pytest version ==="
